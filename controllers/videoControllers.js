@@ -11,15 +11,17 @@ export const home = async (req, res) => {
   }
 };
 
-export const search = (req, res) => {
+export const search = async (req, res) => {
   const {
     query: { term: searchingBy }
   } = req;
-  res.render("search", {
-    pageTitles: "Search",
-    searchingBy: searchingBy,
-    videos_a
-  });
+  let videos = [];
+  try {
+    videos = await Video.find({ title: { $regex: searchingBy } });
+  } catch (error) {
+    console.log(error);
+  }
+  res.render("search", { pageTitles: "Search", searchingBy, videos });
 };
 
 export const videos = (req, res) => {
@@ -55,7 +57,7 @@ export const video_detail = async (req, res) => {
   } = req;
   try {
     const video = await Video.findById(id);
-    res.render("video_detail", { pageTitles: "Video_Detail", video }); // model 을 pug 로 넘김 (videoBlock 의 video 변수로)
+    res.render("video_detail", { pageTitles: `${video.title}`, video }); // model 을 pug 로 넘김 (videoBlock 의 video 변수로)
   } catch (error) {
     console.log(error);
     res.redirect(routes.home);
@@ -89,6 +91,14 @@ export const postEditVideo = async (req, res) => {
   }
 };
 
-export const delete_video = (req, res) => {
-  res.render("delete_video", { pageTitles: "Delete_Video" });
+export const delete_video = async (req, res) => {
+  const {
+    params: { id }
+  } = req;
+  try {
+    await Video.findOneAndDelete({ _id: id });
+  } catch (error) {
+    console.log(error);
+  }
+  res.redirect(routes.home);
 };

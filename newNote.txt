@@ -446,3 +446,179 @@ title:title 과 같이 쓰지 않고 하나로 title 이라고만 써도 같은 
 
 코드 작성에는 매우 편한거 같은데 
 남이 이렇게 쓰면 굉장히 리뷰하기 힘들어보인다.
+
+45. search
+아무런 조건없이 await Video.find({}) 를 하게 되면
+먼저 넣은 데이터가 먼저 나오는 큐 와 같은 자료구조로 나오게 된다.
+그래서 순서를 스택 처럼 바꾸고 싶다면 
+find({}).sort({ _id: -1}) 로 하면
+아이디를 역순으로 find 하겠다는 의미이다.
+
+46. ESLint
+ESLint 란 자바스크립트 코드를 작성할때, 코드가 잘못되었거나, 오류를 유발할 가능성을 주거나 하는 등의 
+코드상에 문제가 발생할 만 한 대상에 미리 IDE 가 경고를 하도록 돕는 패키지 이다.
+
+설치는 아래 방식으로 
+way I solve the problem. when eslint global doesnt work
+
+1. remove if you installed eslint globally  $ npm uninstall eslint -g
+
+2. install  eslint extension on vscode
+https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint
+
+3.  install 3 packages manually, not by command on eslint installed globally, 
+$ yarn add eslint-config-airbnb-base eslint eslint-plugin-import
+
+4. make .eslintrc.js file and copy paste codes below
+module.exports = {
+  env: {
+    browser: true,
+    es6: true,
+    node: true
+  },
+  extends: "airbnb-base",
+  globals: {
+    Atomics: "readonly",
+    SharedArrayBuffer: "readonly"
+  },
+  parserOptions: {
+    ecmaVersion: 2018,
+    sourceType: "module"
+  },
+  rules: {}
+};
+
+5. install eslint-config-prettier $yarn add eslint-config-prettier
+
+6. go to .eslintrc.js file and change "extends" from   "airbnb-base", to ["airbnb-base", "prettier"],
+
+7. go to app.js and try save by ctrl+s  then you will see red lines if eslint activates succesfully
+
+(npm 에서 -g 는 global 의 약어로 현재 프로젝트에서만 설치를 하는게 아니라 로컬의 어떤 프로젝트든지 사용하도록 하는것)
+
+설치 후에 
+eslint --init 을 하면 eslint 의 초기 설정을 지정해 줄 수 있다.
+
+(format on save 를 하게 되면 preitter 에 의해서 저장 할 때 마다 파일들을 포맷 해준다, preitter 설치하면 기본으로 설정해주는것 같다)
+
+47. 일부만 검색
+검색할때 일부 글자만 보고 그것이 들어간 모든 대상을 찾을때
+정규식을 이용한다. 
+express 에서는 정규식을 사용할 때 
+$regex:statement 같은 구문으로 정의를 한다.
+
+그리고 위의 정규식에서 어떤 옵션을 추가해 주고자 하는 경우
+, $options:~ 같이 써준다
+옵션 값으로 "i" 가 들어가는 경우 insensitive 의 약어로 대소문자 구분을 하지 않는다는 뜻이다.
+
+videoControllers 에서 search 부분의 함수를 let videos = [] 로 선언한 것은 
+특정 값을 검색으로 찾을 때마다 변경시켜주기 위함이다 (const 의 경우 상수 여서 이를 막기 위함임)
+
+48. webpack
+webpack 은 ES6 JS 나 sass 등 여러 파일들을 고전적인 JS 나 css 등으로 통합 변환 시켜주는 
+module bundler 이다 (ES6 등 여러 modern 한 파일들을 static file 로 변환 시킴)
+
+npm install webpack webpack-cli 로 설치한다
+
+webpack 은 기본 패키지로 파일을 변환 시키는데 사용하고
+webpack-cli 는 커맨드 라인 환경에서 쓰기 위함이다.
+
+package.json 에 
+npm start 대신 앞으로는 
+"dev:server":" 기존 npm start 내용 "
+"dev:assets":" webpack " 
+으로 바꿔서 실행한다.
+
+webpack 은 서버 코드와 별도로 돌아가야만 하는 코드이기 때문에
+기존 서버 코드 작성시에 사용했던 
+nodemon babel 등 은 사용되지 않는다
+그래서 webpack.config.js 파일을 작성 할 때는 구 자바스크립트 코드를 써야한다.
+
+webpack 에는 두가지 요소가 존재한다
+ - 1. entry
+ :  어디에서 파일이 왔는지를 명시하는 것
+ - 2. output
+ : entry 에서 온 파일을 어디에 넣을 것인가를 묻는것.
+
+
+49. node.js 에서 파일과 경로를 absoulte 하게 만드는 방법 (absoulte : 절대 경로 (모든 경로를 다 표시하는 방식))
+nodejs 에 기본적으로 깔려있는 path 라는 모듈을 활용하여 정의 할 수 있다.
+webpack.config.js 에 const path = require('path'); 를 정의 한다 ( import path from "path"; 와 동일 )
+
+__dirname : 현 디렉토리의 주소 값 (nodejs 에서 제공하는 환경 변수)
+
+
+50. webpack.config.js 추가 설정
+package.json 에 script 부분에 다음과 같은 코드를 추가한다.
+
+"dev:assets":"WEBPACK_ENV=development webpack",
+"build:assets":"WEBPACK_ENV=production webpack"
+
+WEBPACK_ENV=production 은 서버에 코드를 올리는 것이고
+WEBPACK_ENV=development 는 로컬에서 환경설정을 위한 코드 이다.
+
+webpack 에 아무런 설정을 해주지 않으면
+scss 코드를 이해하지 못한다
+그래서 webpack 설정 파일에서 
+module: {
+    rules: [
+        {
+            test: /\.(scss)$/       // scss 파일을 모두 찾아라 라는 의미
+            use:        // 찾은 파일을 css 로 바꿔라 라는 의미
+        }
+    ]
+}
+
+에 다가 scss 를 이해할 수 있게
+loader 를 실어 준다 
+loader 란 webpack 에게 파일을 어떻게 처리할지에 대한 방법을 주는 역할을 한다.
+
+loader 에 정의를 내릴 때는 정규 표현식으로 쓴다.
+
+위에서 rules : [ { use: ~~}] 를 사용할 때 
+npm install extract-text-webpack-plugin@next 를 사용해
+필요한 패키지를 미리 설치해 놔야 한다.
+(extract-text-webpack-plugin)
+
+npm 에서 @next 는 다음의 최신 버젼을 깔으란 뜻이고
+@2.3 같이 쓰면 2.3 버젼을 다운 받아라 라는 뜻이다.
+
+ use: ExtractCSS.extract([
+          {
+            loader: "css-loader"
+          },
+          {
+            loader: "postcss-loader"
+          },
+          {
+            loader: "sass-loader"
+          }
+        ])
+
+부분은 순차적으로 코드가 실행되는게 아니라
+아래에서 부터 위로 실행 된다
+즉, sass 부터 로더에 싣고 postcss, css 순으로 올린다.
+
+sass-loader 는 scss 파일을 로더를 통해서 css 파일로 옮겨 주고
+postcss-loader 는 css 관련된 plugin 들 을 로더에 담아 처리(실행)해주며 (컴파일 비슷한듯)
+css-loader 는 마지막으로 여러 로더를 거쳐서 옮겨진 css 를 최종적으로 정리하여 loader 에 담아주며
+ExtractCSS 로 loader 에 올라간 css 파일의 유효한 코드만 추출하여 따로 빼내는 작업을 한다.
+
+postcss 는 css 코드 작성 시에 자동완성을 도와주거나, 브라우저 별 호환성에 맞게 자동변환 해준다던가 
+아니면 eslint 처럼 오류 사항에 대해서 알림을 주는 그런 도구다.
+
+autoprefixer 의 browsers 옵션은 
+어느 브라우저에서 호환성을 어떻게 맞출 것인가 에 대한 설정을 해주는 코드다
+뭐 예를 들면 크롬 몇 버젼 이상 부터만 사용가능하게 한다 던지
+cover 99.5% 는 99.5% 에 해당하는 거의 모든 대상에게 적용시킨다 라는 뜻이다.
+
+51. scss 에서 변수 선언
+$name: value; 형태로 선언한다.
+
+52. 윈도우 CLI 환경변수 설정 문제
+맥os 와는 다르게 윈도우 환경에서는 환경 변수 설정을 위한 작업이 번거롭다 (패키지 매니저가 따로 있긴 하지만 일반 cmd 에선 안 먹힘)
+그래서 복잡한 환경 설정 문제를 해결하고자, 
+cross-env 라는 패키지를 설치해 주면 이 문제를 해결 할 수 있다.
+
+참조 : www.npmjs.com/package/cross-env
+

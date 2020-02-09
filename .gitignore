@@ -118,3 +118,6 @@ multer.html
 # upload file
 uploads
 uploads/videos
+
+# yarn-lock
+yarn.lock

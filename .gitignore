@@ -114,3 +114,7 @@ package-lock.json
 
 # test file
 multer.html
+
+# upload file
+uploads
+uploads/videos

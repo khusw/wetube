@@ -1,1 +1,10 @@
-extends layouts/main 
+extends layouts/main
+
+block content
+    .video__player
+        video(src=`/${video.fileUrl}`)
+    .video__info
+        a(href=routes.edit_video(video.id)) Edit Video
+        h5.video__title=video.title
+        span.video__views=video.views
+        p.video__descrption=video.description

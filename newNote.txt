@@ -683,3 +683,20 @@ passport.js 는 이 쿠키를 활용하여 진행되는데
 이 모듈은 User 라는 model 을 만드는데 도움을 주는 모듈로 
 패스워드 변경, 암호화, 확인 등 여러 보안적인 작업에 도움을 줌과 동시에
 passport.js 와 같이 인증을 할 수 있도록 돕는다.
+User.js 의 스키마에 위 모듈을 추가하더라도 
+passport.js 를 다운 받아서 추가적인 설정을 해줘야만 
+실질적인 인증 작업이 가능하다.
+
+npm install passport passport-local 을 해준다
+passport-local 은 일반적인 사용자 인증 방식 (username, password 를 사용한)
+을 말한다
+
+스키마에서 usernameField : email 로 지정했는데
+
+passport-local 에서 username 을 작성할때 
+즉 사용자가 로그인할때 아이디를 이메일 형식으로 해서 로그인 해라 
+그런 뜻이다.
+
+61. strategy
+passport 에서 strategy 란 로그인을 어떤방식으로 할 건지를 의미한다
+passport-facebook, passport-github 등 을 의미함 

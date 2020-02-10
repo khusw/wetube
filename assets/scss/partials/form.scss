@@ -9,8 +9,6 @@
     margin-bottom: 50px;
     input:not([type="file"]),
     .fileUplaod {
-      display: flex;
-      flex-direction: row;
       width: 100%;
       padding-top: 10px;
       padding-bottom: 10px;
@@ -32,11 +30,5 @@
   a {
     max-width: 320px;
     width: 100%;
-  }
-  .fileUplaod {
-    label {
-      font-weight: 300;
-      margin-right: 10px;
-    }
   }
 }

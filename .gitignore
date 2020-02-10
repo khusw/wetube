@@ -121,3 +121,6 @@ uploads/videos
 
 # yarn-lock
 yarn.lock
+
+# static folder
+static

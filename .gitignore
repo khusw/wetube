@@ -124,3 +124,6 @@ yarn.lock
 
 # static folder
 static
+
+# note file
+newNote.txt

@@ -326,18 +326,6 @@ input[type="submit"] {
     margin-bottom: 50px; }
     .form-container form input:not([type="file"]),
     .form-container form .fileUplaod {
-      display: -webkit-box;
-      display: -webkit-flex;
-      display: -moz-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-orient: horizontal;
-      -webkit-box-direction: normal;
-      -webkit-flex-direction: row;
-         -moz-box-orient: horizontal;
-         -moz-box-direction: normal;
-          -ms-flex-direction: row;
-              flex-direction: row;
       width: 100%;
       padding-top: 10px;
       padding-bottom: 10px;
@@ -359,9 +347,6 @@ input[type="submit"] {
   .form-container a {
     max-width: 320px;
     width: 100%; }
-  .form-container .fileUplaod label {
-    font-weight: 300;
-    margin-right: 10px; }
 
 .social-login {
   display: -webkit-box;

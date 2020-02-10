@@ -646,3 +646,21 @@ output : webpack 에 의한 빌드로 생성된 파일들의 결과물을 어디
 지금은 버젼이 달라서 안뜨는 오류 인것 같지만,
 위 오류가 뜨면 @babel/polyfill 를 설치하여 해결한다.
 (이 패키지는 js 에서 사용이 안되는? 그런 메소드들을 사용하게 돕는거 같다)
+
+57. scss 의 문법 장점
+ - 1. 부모 selector 안에 자식 selector 를 넣어서 설정할 수 있다
+  기존에는 .father .child 이런 식으로 해야 햇는데 
+  .father {
+    .child {
+
+    }
+  }
+  형식으로 정의가 가능하다 (더 명확하게 상속관계를 보여줌)
+ - 2. & 문법의 추가
+   & 는 현재 selector 에서 탐색한다는 의미이다.
+   &:last-child 는 현 selector 의 마지막 자식 selector 를 찾는다는 의미
+   또한 &::placeholder 를 하게 되면 현 selector 에서 placeholder 값을 
+   바꾸겠다는 의미로 해석 된다.
+ - 3. 전역 변수의 선언
+   _variables.scss 를 보면 $name : value; 형식으로 선언 되었다.
+   이렇게 선언하고 쓰면 모든 scss 에서 사용가능한 전역 변수가 된다. 

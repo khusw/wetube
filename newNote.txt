@@ -700,3 +700,40 @@ passport-local 에서 username 을 작성할때
 61. strategy
 passport 에서 strategy 란 로그인을 어떤방식으로 할 건지를 의미한다
 passport-facebook, passport-github 등 을 의미함 
+
+62. JS 에서의 serialization 
+JS 에서 serialization 은 쿠기에게 어떤 정보를 줄지를 정해주는 것이다.
+클라이언트 단위에서 어느범위까지 정보를 가질 수 있느냐를 명시하는 것인듯
+
+serialization 통해서 프로젝트에서 직접 쿠키에 정보를 줄 수 있는데
+이때 주의해야 할 점은 너무 민감한 정보 등은 넣지 않는게 좋고,
+정보를 너무 많이 담아서도 안된다. (쿠키는 임시 파일이므로)
+
+deserialization 은 쿠키 정보를 가지고 어떤 사용자인가 를 판별하는데 사용한다
+유저가 누구인지, 맞는 대상인지 등
+
+본래는 passport-local-mongoose 가 아니라 passport.js 의 documentation 에 따라서 작성한다면 
+여러 줄에 걸쳐야만 serialization, deserialization 이 가능하지만
+passport-local-mongoose 를 이용하면 
+단 한줄로 줄일 수 있다.
+참조 : https://github.com/saintedlama/passport-local-mongoose
+
+63. model 을 통한 로그인 하기 
+먼저 model 이 들어있는 js 파일을 import 한다 (import userModel from "../models/User")
+model 에서 필요한 정보만 따로 모아서 obj 로 만든다 (여기선 userModel 에서 name, email 만 뽑아 왔다)
+userModel.register(obj, password); 같은 방식으로 모델을 통해서 등록(register) 을 한다
+
+이 과정은 모두 passport.js 가 아니라, 
+passport-local-mongoose 를 통해서 간략화 한 과정이다.
+일반 passport 만으로 하려면 더 긴 줄을 작성해야 한다.
+
+64. 회원 가입 후 바로 로그인 
+을 만들기 위해서 userController 에서 
+postJoin 에 next 를 넣어서 마치 미들웨어 처럼 만들고 
+그 다음 호출 함수로 postJoin 을 넣도록 재 수정함
+(또한 postJoin 은 passport 을 활용해서 로그인 인증 하게 만듬)
+
+passport.authenticate(strategy, {options});
+에서 함수 authenticate 는 함수 내부에서 username, password 를 찾도록 되어 있고,
+이때 사용할 strategy 와 options 을 활용해서 인증 여부를 심사한다.
+(미들 웨어에서 다음 함수로 정보를 넘겨 주기 때문에 다음함수인 passport 에서도 미들웨어 정보 req.body.name 등 을 그대로 사용가능)

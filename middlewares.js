@@ -6,7 +6,7 @@ const multerVideo = multer({ dest: "uploads/videos/" });
 export const localMiddleware = (req, res, next) => {
   res.locals.siteName = "WeTube";
   res.locals.routes = routes; // routes 객체를 변수로 받아옴
-  res.locals.user = req.user;
+  res.locals.user = req.user || {}; // passport 를 통해서 인증이 되었으면 req.user 를 아니면 빈 객체를 리턴
   next();
 };
 

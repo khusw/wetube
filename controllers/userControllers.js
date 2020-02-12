@@ -80,6 +80,10 @@ export const users = (req, res) => {
   res.render("users", { pageTitles: "Users" });
 };
 
+export const me = (req, res) => {
+  res.render("user_detail", { pageTitles: "user_detail", user: req.user });
+};
+
 export const user_detail = (req, res) => {
   res.render("user_detail", { pageTitles: "User_Detail" });
 };

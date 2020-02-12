@@ -6,8 +6,26 @@ const multerVideo = multer({ dest: "uploads/videos/" });
 export const localMiddleware = (req, res, next) => {
   res.locals.siteName = "WeTube";
   res.locals.routes = routes; // routes 객체를 변수로 받아옴
-  res.locals.user = req.user || {}; // passport 를 통해서 인증이 되었으면 req.user 를 아니면 빈 객체를 리턴
+  res.locals.user = req.user || null; // passport 를 통해서 인증이 되었으면 req.user 를 아니면 빈 객체를 리턴
   next();
+};
+
+export const onlyPublic = (req, res, next) => {
+  // public 은 특정 사용자가 로그인 하지 않았을때
+  if (req.user) {
+    res.redirect(routes.home);
+  } else {
+    next();
+  }
+};
+
+export const onlyPrivate = (req, res, next) => {
+  // private 은 특정 사용자로 로그인 했을 때 접근 가능 범위 설정
+  if (req.user) {
+    next();
+  } else {
+    res.redirect(routes.home);
+  }
 };
 
 export const uploadVideo = multerVideo.single("videoFile");

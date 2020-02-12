@@ -737,3 +737,80 @@ passport.authenticate(strategy, {options});
 에서 함수 authenticate 는 함수 내부에서 username, password 를 찾도록 되어 있고,
 이때 사용할 strategy 와 options 을 활용해서 인증 여부를 심사한다.
 (미들 웨어에서 다음 함수로 정보를 넘겨 주기 때문에 다음함수인 passport 에서도 미들웨어 정보 req.body.name 등 을 그대로 사용가능)
+
+65. passport.initialize(), passport.session()
+initialize 를 통해서 passport 를 초기화 하고, 
+앞선 미들웨어인 cookie-parser 를 통해서 쿠키 값을 얻어오면 
+그 값을 토대로 session 을 만들고, 이 session 에서 cookie 를 활용해 
+req.user 라는 object 를 만들어서 내부적으로 사용자 인증을 진행하게 된다.
+
+passport 에서 session 을 제대로 사용하기 위해서는
+npm install express-session 을 해야만 사용가능하다
+
+66. express-session 
+이 모듈을 다운 받은 뒤에 
+app.use(session({options})); 을 passport.initialize() 앞에 미들웨어로 써줘야 한다.
+options 에는 다양한 것들이 들어가는데, 
+꼭 넣어야만 하는 필수 옵션들이 있다.
+대표적으로 
+secret 이 있고 이에 대한 value 는 randomkeygen 이라는 것을 통해서 넣는다. (value 에는 사실 아무 값이나 넣어도 된다)
+그리고 이 value 값을 직접 넣어주기 보다는 .env 에다가 넣어서 숨기는게 좋다.
+
+67. session 을 db 에 넣고 연동
+session 을 쭉 유지 하기 위해서는 (서버가 꺼지더라도) db 에 넣거나 메모리에 담아야한다
+이때 db 에 넣으려면 connect-mongo 모듈을 사용한다.
+이 모듈을 사용하면 MongoStore 라는 객체를 만들수 있으며 이를 통해서 쿠키를 mongoDB 에 연동 시킬 수 있다.
+
+68. routes 접근 제한
+이미 로그인이 된 사용자의 경우 특정 홈페이지는 접속할 필요가 없는 경우가 있다. (회원가입 등)
+이런 것에 대한 제제를 가하려면 middleware 를 만들어서 제제해준다.
+
+export const onlyPublic 은 로그아웃 상태에서 만 접근가능한 routes 를 만들기 위함이다.
+
+69. social login 의 진행 과정 
+먼저 passport 에서 필요한 strategy 를 다운 받는다 (ex)npm i passport-github
+해당 strategy 에서 제공하는 OAuth 홈페이지 가서 정보를 입력한다
+(사용할 어플의 이름, URL, 설명, callback URL)
+
+이 과정을 마치면, 우리의 어플을 사용하는 사용자가, 소셜 로그인을 요청하면 
+그 소셜 로그인 홈페이지로 들어가고 (깃헙 사이트, 페북 사이트 등)
+거기서 로그인을 실행하고 깃헙 등의 사이트에서 우리가 만든 어플로 정보를 전송할건지 물어보고
+요청이 맞다고 하면 정보를 암호화하여 우리의 어플로 넘겨줌
+
+callback URL 은 특정한 규칙이 있기보다는 
+어플에서 그냥 주소를 지정해주는 방식인듯
+여기선
+localhost:4000/auth/github/callback 으로 지정함
+
+이 작업을 통해서 register 를 완료하게 되면
+clientID 와 clientSecret 이 주어진다
+
+항상 주의 할 것은 이값들은 "비밀 키" 이다.
+그래서 보안상의 문제가 될 수 있는것들이기 때문에
+반드시 이 값은 노출되어선 안되고 
+.env 의 환경변수 에 저장한다. 
+
+
+70. github 로그인 정리
+먼저 사용자가 form 에 들어가서 login github 버튼을 누른다
+그러면 Router 에 의해 /auth/github 주소로 넘어간다
+거기서 사용자가 github 아이디 비번을 입력하게 되면, 
+passport.js 를 통해서 사용자 인증을 해주는 함수로 들어가게 되고 (이건 직접 작성해야함)
+/auth/github/callback 홈페이지로 가면 passport.js 에서 설정한 
+strategy 객체의 콜백 함수로 넘어간다
+
+71. 소셜로그인 콜백함수의 사용
+passport.js 에서 제공하는 accessToken, refreshToken, profile, cb 
+를 활용하면 최종적으로 사용자 검증을 완료 할 수 있다.
+이전까지의 과정은 깃헙 사이트로 넘어가서 깃헙 사이트에서만 인증을 한것이고
+이 작업이 완료되도록 하기 위해선 내 어플로 넘어가서 인증이 되었음을 알려야한다
+그래서, profile 의 _json 파일에 보면 
+깃헙 사용자 아이디와 각종 정보를 얻을 수 있고,
+이 정보를 user model 에 넘겨주어 DB 에서 정보를 비교하여 
+검증을 완료한다.
+
+(참고로 함수에서 쓰지 않는 인자들은 _, __ 같이 언더바로 재정의 할 수 있다)
+(라이브러리에서 기본적으로 제공하는 함수에 대한 오버라이딩을 하는 것이
+js 에도 있긴 하지만, 명시적으로 함수의 이름이나 어노테이션을 쓰지 않는다
+그래서 헷갈리는 부분이 계속 생기는 듯
+하지만 오버라이딩한 함수의 인자들 순서는 꼭 지켜야함)

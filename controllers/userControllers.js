@@ -2,6 +2,7 @@ import routes from "../routes";
 import userModel from "../models/User";
 import passport from "passport";
 
+// join
 export const getJoin = (req, res) => {
   res.render("join", { pageTitles: "Join" });
 };
@@ -29,6 +30,7 @@ export const postJoin = async (req, res, next) => {
   }
 };
 
+// local login
 export const getLogin = (req, res) => {
   res.render("login", { pageTitles: "Login" });
 };
@@ -38,8 +40,39 @@ export const postLogin = passport.authenticate("local", {
   successRedirect: routes.home
 });
 
+// github
+export const githubLogin = passport.authenticate("github");
+
+export const githubLoginCallback = async (_, __, profile, cb) => {
+  const {
+    _json: { id, avatar_url, name, email }
+  } = profile;
+
+  const user = await userModel.findOne({ email: email });
+
+  if (user) {
+    user.githubId = id;
+    user.save();
+    return cb(null, user); // 찾았으면 두번째 인자를 리턴, 못 찾았으면 null 을 리턴
+  }
+
+  const newUser = await userModel.create({
+    email: email,
+    name: name,
+    githubId: id,
+    avatarUrl: avatar_url
+  });
+
+  return cb(null, newUser);
+};
+
+export const postGithubLogin = (req, res) => {
+  res.redirect(routes.home);
+};
+
+// logout
 export const logout = (req, res) => {
-  // TODO : make process log out
+  req.logout();
   res.redirect(routes.home);
 };
 

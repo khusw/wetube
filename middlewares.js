@@ -2,6 +2,7 @@ import multer from "multer";
 import routes from "./routes";
 
 const multerVideo = multer({ dest: "uploads/videos/" });
+const multerAvatar = multer({ dest: "uploads/avatars/" });
 
 export const localMiddleware = (req, res, next) => {
   res.locals.siteName = "WeTube";
@@ -29,6 +30,7 @@ export const onlyPrivate = (req, res, next) => {
 };
 
 export const uploadVideo = multerVideo.single("videoFile");
+export const uploadAvatar = multerAvatar.single("avatar");
 // single 은 하나의 파일만을 업로드 할 수 있음을 의미하고
 // single 내부의 값은 input file tag 의 name 값이다. (uplaod.pug 참조)
 

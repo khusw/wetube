@@ -74,11 +74,30 @@ export const postGithubLogin = (req, res) => {
 export const facebookLogin = passport.authenticate("facebook");
 
 export const facebookLoginCallback = async (_, __, profile, cb) => {
-  console.log(_, __, profile, cb);
   const {
-    _json: { id, avatarUrl, name, email }
+    _json: {
+      id,
+      name,
+      picture: { url },
+      email
+    }
   } = profile;
-  const user = await userModel.findOne({ email: email });
+  try {
+    const user = await userModel.findOne({ email: email });
+    if (user) {
+      (user.facebookId = id), user.save();
+      return cb(null, user);
+    }
+    const newUser = await userModel.create({
+      email,
+      name,
+      facebookId: id,
+      avatarUrl: url
+    });
+    return cb(null, newUser);
+  } catch (error) {
+    return cb(error);
+  }
 };
 
 export const postFacebookLogin = (req, res) => {
@@ -104,16 +123,55 @@ export const user_detail = async (req, res) => {
   } = req;
   try {
     const user = await userModel.findById(id);
-    res.render("user_detail", { pageTitles: "User_Detail", user });
+    res.render("user_detail", { pageTitles: "User Detail", user });
   } catch (error) {
     res.redirect(routes.home);
   }
 };
 
-export const edit_profile = (req, res) => {
-  res.render("edit_profile", { pageTitles: "Edit_Profile" });
+export const getEditProfile = (req, res) => {
+  res.render("edit_profile", { pageTitles: "Edit Profile" });
 };
 
-export const change_password = (req, res) => {
+export const postEditProfile = async (req, res) => {
+  const {
+    body: { name, email },
+    file
+  } = req;
+
+  try {
+    await userModel.findByIdAndUpdate(req.user.id, {
+      name,
+      email,
+      avatarUrl: file ? file.path : req.user.avatarUrl
+    });
+    res.redirect(routes.me);
+  } catch (error) {
+    res.redirect(rouets.edit_profile);
+  }
+};
+
+export const getChangePassword = (req, res) => {
   res.render("change_password", { pageTitles: "Change_Password" });
+};
+
+export const postChangePassword = async (req, res) => {
+  const {
+    body: { current_password, new_password, verify_new_password }
+  } = req;
+
+  try {
+    if (new_password !== verify_new_password) {
+      req.flash("error", " Password don't match ");
+      res.status(400);
+      res.redirect(routes.change_password);
+      return;
+    }
+    await req.user.changePassword(current_password, new_password); // mongoose-local-passport API 에 서술된 메소드
+    res.redirect(routes.me);
+  } catch (error) {
+    req.flash("error", "Can't change password");
+    res.status(400);
+    res.redirect(`/users${routes.change_password}`);
+  }
 };

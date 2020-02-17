@@ -42,8 +42,11 @@ export const postUpload = async (req, res) => {
     const newVideo = await Video.create({
       fileUrl: path,
       title,
-      description
+      description,
+      creator: req.user.id
     });
+    req.user.videos.push(newVideo.id);
+    req.user.save();
     res.redirect(routes.video_detail(newVideo.id));
   } catch (error) {
     console.log(error);
@@ -56,7 +59,7 @@ export const video_detail = async (req, res) => {
     params: { id }
   } = req;
   try {
-    const video = await Video.findById(id);
+    const video = await Video.findById(id).populate("creator");
     res.render("video_detail", { pageTitles: `${video.title}`, video }); // model 을 pug 로 넘김 (videoBlock 의 video 변수로)
   } catch (error) {
     console.log(error);
@@ -70,7 +73,11 @@ export const getEditVideo = async (req, res) => {
   } = req;
   try {
     const video = await Video.findById(id);
-    res.render("edit_video", { pageTitles: `Edit ${video.title}`, video });
+    if (video.creator !== req.user.id) {
+      throw Error();
+    } else {
+      res.render("edit_video", { pageTitles: `Edit ${video.title}`, video });
+    }
   } catch (error) {
     console.log(error);
     res.redirect(routes.home);
@@ -96,7 +103,12 @@ export const delete_video = async (req, res) => {
     params: { id }
   } = req;
   try {
-    await Video.findOneAndDelete({ _id: id });
+    const video = await Video.findById(id);
+    if (video.creator !== req.user.id) {
+      throw Error();
+    } else {
+      await Video.findByIdAndRemove({ _id: id });
+    }
   } catch (error) {
     console.log(error);
   }

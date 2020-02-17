@@ -26,6 +26,10 @@
       background-color: #3498db;
       color: white;
     }
+    input[type="password"] {
+      font-family: "pass", "Roboto", Helvetica, Arial, sans-serif;
+      font-size: 18px;
+    }
   }
   a {
     max-width: 320px;

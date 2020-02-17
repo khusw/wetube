@@ -162,7 +162,6 @@ export const postChangePassword = async (req, res) => {
 
   try {
     if (new_password !== verify_new_password) {
-      req.flash("error", " Password don't match ");
       res.status(400);
       res.redirect(`/users${routes.change_password}`);
       return;
@@ -170,7 +169,6 @@ export const postChangePassword = async (req, res) => {
     await req.user.changePassword(current_password, new_password); // mongoose-local-passport API 에 서술된 메소드
     res.redirect(routes.me);
   } catch (error) {
-    req.flash("error", "Can't change password");
     res.status(400);
     res.redirect(`/users${routes.change_password}`);
   }

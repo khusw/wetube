@@ -24,10 +24,10 @@ userRouter.post(
   postEditProfile
 );
 
-userRouter.get(routes.user_detail(), user_detail);
-
 // change password
 userRouter.get(routes.change_password, onlyPrivate, getChangePassword);
 userRouter.post(routes.change_password, onlyPrivate, postChangePassword);
+
+userRouter.get(routes.user_detail(), user_detail);
 
 export default userRouter;

@@ -814,3 +814,100 @@ passport.js 에서 제공하는 accessToken, refreshToken, profile, cb
 js 에도 있긴 하지만, 명시적으로 함수의 이름이나 어노테이션을 쓰지 않는다
 그래서 헷갈리는 부분이 계속 생기는 듯
 하지만 오버라이딩한 함수의 인자들 순서는 꼭 지켜야함)
+
+72. 소셜 로그인 과정에 대한 리뷰
+
+githubStrategy 를 만든다 (passport.js  에서)
+/auth/github 사이트로 접속하도록 routes, router 를 설정한다 
+controller 에서 passport.authenticate('github') 를 생성한다.  -- 여기 까지가 /auth/github 에 대한 get 메소드 사용과정
+
+/auth/github/callback 주소로 넘어가게 하는 app.use() 를 만든다 (in router)
+이 주소로 넘어가게 되면, passport.js 에서 githubLoginCallback 함수로 넘어간다 (githubStrategy 옆에 있는 함수)
+이 함수에선 깃헙 계정 정보를 받아오고, 이 정보를 토대로 db 에 모델에서 탐색하여 찾은 다음에 
+일치하는 대상이 잇으면 그대로 로그인하고, db 에 없는 경우 깃헙 정보를 가지고 새로운 document 를 만들어서 db 에 넣는다. (userModel.create())
+그리고 cb 함수를 불러온다 여기에 인자로 null, user 를 넣는데 
+깃헙에서 찾은 대상이 없거나, db 에 없거나 하면 null 을 리턴
+아니면 깃헙에서 찾은 user 또는 db 에 새로 넣은 user 를 리턴한다
+(이때 깃헙 유저를 찾으면  passport.authenticate("github", { failureRedirect: `${routes.login}` }) 함수가 정상값으로 넘어가고
+찾는 것을 실패하면, routes.login 으로 돌아간다)
+
+이 cb 함수의 결과로 passport 가 알아서 cookie 를 생성하고
+쿠키를 저장한다음 (클라이언트 서버 모두 저장인가?)
+최종적으로 쿠키를 전달한다 
+
+결국 passport 의 역할은 소셜 로그인 과정에서 인증을 담당하며,
+세션에 쿠키를 만들어서 넘겨주는 역할.
+
+- 깃헙 페이지로 보낸다 : passport.authenticate("github");
+- DB 와 비교하여 유저가 있는지 파악한다 : callback function
+- 위 작업들이 모두 완료되면 redirect 한다.
+
+73. facebook 로그인의 문제점
+fb 로 로그인 작업을 github 과 똑같이 만들면 정보를 가져 올 수 있긴 하나
+단순히 이름, 성별, 프로파일 주소 정도만 가져올 수 있고, 나머지 이메일, 프로필 사진 등은 가져올 수 없다
+그 이유는 https 로 만들어진 페이지가 아니면 접근할 수 없도록 페이스북에서 차단했기 때문이다
+그래서 
+http 를 https 로 바꾸려면
+localtunnel 이란 툴을 이용하면 된다. (http 페이지를 https 로 변환하도록 터널을 생성해줌)
+
+그러나, localtunnel 로 만든 https 홈페이지는 임의의 url 명을 갖고 생성된다
+그래서 실제로 앱을 출시할경우
+이런식으로 출시를 하면 안되고 제대로 된 도메인명을 갖는 페이지로 제작하여 출시해야 한다 (돈주고 사야함)
+
+cf) facebook 에서 avatarUrl 을 쓸려면, graphAPI 라는 것을 통해서 해야한다.
+https://graph.facebook.com/id(_json 으로 얻은)/picture?type=large 로 얻어 올 수 있다.
+avatarUrl 작성시에는 다음과 같이 쓴다
+
+avatarUrl : `https://graph.facebook.com/${id}/picture?type=large`
+
+
+* css 참고
+https://heropy.blog/2018/11/24/css-flexible-box/
+flex 속성을 사용할 때, css 에는 크게 두가지로 나뉜다
+container, items
+container는 items 의 부모이며, items 는 container 의 자식요소들이다
+display:flex 를 하면, container 들을 block 형식으로 나열하는 것 (기본속성으로 수평)
+display:inline-flex 를 하면, container들을 수평으로 나열함 (inline 은 css에서 수평을 의미)
+
+flex-direction: items 들 의 주축을 설정하는 것.
+row 이면 x 축이 주축이되고,
+column 이면 y 축이 주축이됨.
+
+row-reverse 는 x축에서 item 들을 반대로 나열하는 것
+column-reverse 는 y 축에서 items 들을 반대로 나열하는 것
+
+주 축(main-axis) 와 교차 축(cross-axis)
+flex-direction:row 가 되면 items 들의 주축이 x축이 되며
+flex-direction:column 이 되면 items 들의 주축이 y축이 된다.
+
+flex-start, flex-end 
+flex-start 는 주축의 시작점을 말하고, flex-end 는 주축의 끝점을 말한다
+cross-start 는 교차축의 시작점을 말하며,
+cross-end 는 교차축의 끝점을 말한다.
+
+flex-wrap 은 items 들을 container 의 크기 안에서 
+여러 줄로 묶는 방식을 말함
+기본 값은 nowrap 이며 이 값이 되면 container 안에서 그냥 한줄로 쭉나열되고
+wrap 을 하면 한줄로 쭉 묶는게 아니라 여러줄로 묶이며,
+wrap-reverse 는 wrap 의 반대 방향으로 여러줄 묶인다.
+
+justify-content 는 주 축에서 items 들의 정렬 방법을 설정한다.
+
+align-content 는 교차축에서 items 들의 정렬 방법을 설정한다.
+단 이속성은 items 들이 flex-wrap 으로 인하여 여러 줄로 묶였을때만 가능하다.
+
+items 가 한 줄일 경우 align-items 를 사용하여 교차축 기준 정렬한다.
+
+align-self 는 개별 각각의 item 하나에 대한 교차축 정렬 방법을 정의한다.
+
+참고)
+router 에서의 주소 설정 순서 
+router 에서 http method 를 쓸 때, 명령줄 순서에 따라서 express 가 다르게 인식할 수 있으니
+항상 순서에 주의한다
+
+74. popluate
+어떤 비디오 객체에서 작성자(creator) 가 누군지 확인하려면 
+const video = Video.findById(id).popluate('creator')
+같은 함수를 쓰게 되면, 해당하는 id 에 부합하는 대상을 찾은 다음
+User 모델에 있는 creator 필드명에 부합하는 document 을 찾아서 video 객체로 넘기게 된다
+즉, video document 에 creator 필드에 값을 객체로써 추가하는 것.

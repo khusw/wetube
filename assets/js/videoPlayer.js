@@ -5,6 +5,7 @@ const volumeBtn = document.getElementById("jsVolumeBtn");
 const fullScreenBtn = document.getElementById("jsFullScreen");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
+const volumeRange = document.getElementById("jsVolume");
 
 const handlePlayClick = () => {
   if (videoPlayer.paused) {
@@ -18,9 +19,11 @@ const handlePlayClick = () => {
 
 const handleVolumeClick = () => {
   if (videoPlayer.muted) {
+    volumeRange.value = videoPlayer.volume;
     videoPlayer.muted = false;
     volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
   } else {
+    volumeRange.value = 0;
     videoPlayer.muted = true;
     volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
   }
@@ -77,8 +80,7 @@ const formatDate = seconds => {
 };
 
 const getCurrentTime = () => {
-  const currentTimeStr = formatDate(videoPlayer.currentTime);
-  currentTime.innerHTML = currentTimeStr;
+  currentTime.innerHTML = formatDate(Math.floor(videoPlayer.currentTime));
 };
 
 const setTotalTime = () => {
@@ -87,11 +89,34 @@ const setTotalTime = () => {
   setInterval(getCurrentTime, 1000);
 };
 
+const handleEnded = () => {
+  videoPlayer.currentTime = 0;
+  playBtn.innerHTML = '<i class="fab fa-google-play"></i>';
+};
+
+const handleDrag = event => {
+  const {
+    target: { value }
+  } = event;
+  var buf = (100 - value) / 4 + parseInt(value);
+  videoPlayer.volume = value;
+  if (value >= 0.6) {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+  } else if (value >= 0.4) {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-down"></i>';
+  } else {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-off"></i>';
+  }
+};
+
 const init = () => {
+  videoPlayer.volume = 0.5;
   playBtn.addEventListener("click", handlePlayClick);
   volumeBtn.addEventListener("click", handleVolumeClick);
   fullScreenBtn.addEventListener("click", goFullScreenClick);
   videoPlayer.addEventListener("loadedmetadata", setTotalTime);
+  videoPlayer.addEventListener("ended", handleEnded);
+  volumeRange.addEventListener("input", handleDrag);
 };
 
 if (videoContainer) {

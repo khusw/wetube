@@ -25,8 +25,32 @@
     .videoPlayer__column:first-child {
       display: flex;
       align-items: center;
-      span:first-child {
+      i {
         margin-right: 15px;
+      }
+    }
+    .videoPlayer__volume {
+      position: absolute;
+      -webkit-appearance: none;
+      padding: 0;
+      opacity: 1;
+      top: -60px;
+      left: -25px;
+      transform: rotate(-90deg);
+      z-index: 10;
+      width: 80px;
+      height: 10px;
+      vertical-align: bottom;
+      background: #2e86de;
+      cursor: pointer;
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 16px;
+        background: #aeaeae;
+        border-radius: 8px;
+        box-shadow: inset 0 0 0 5px #eaeaea;
+        transition: 0.1s ease-in;
+        width: 16px;
       }
     }
     .videoPlayer__column:nth-child(2) {

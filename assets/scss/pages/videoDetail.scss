@@ -1,6 +1,7 @@
 .video-detail__container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   .video__info {
     width: 100%;
@@ -34,8 +35,29 @@
   }
   .video__comments {
     margin-top: 25px;
-    .video__comment-number {
-      font-size: 18px;
+    text-align: center;
+    .add__comment {
+      margin-top: 25px;
+      input[type="text"] {
+        text-align: center;
+      }
+    }
+    .video__comments-list {
+      margin-top: 25px;
+      .comments {
+        background-color: #40739e;
+        color: white;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 10px;
+        border-bottom-left-radius: 0px;
+        &:not(:last-child) {
+          margin-bottom: 25px;
+        }
+      }
+    }
+    .video__comments-number {
+      font-size: 20px;
     }
   }
 }

@@ -25,8 +25,11 @@ block content
             else
                 span.video__comments-number #{video.comments.length} comments
             form.add__comment#jsAddComment
-                input(type="text", placeholder="Add a comment", name="comment")
-            ul.video__comments-list
-                each comment in video.comments
-                    li 
-                        span=comment.text
+                if loggedUser
+                    input(type="text", placeholder="Add a comment", name="comment")
+                    ul.video__comments-list
+                        each comment in video.comments
+                            li.comments 
+                                span=comment.text
+                else
+                    input(type="text", placeholder="you need to log in" ,disabled)

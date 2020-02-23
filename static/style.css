@@ -527,6 +527,11 @@ input[type="submit"] {
      -moz-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+     -moz-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   -webkit-box-align: center;
   -webkit-align-items: center;
      -moz-box-align: center;
@@ -554,9 +559,29 @@ input[type="submit"] {
     .video-detail__container .video__info .video__description {
       font-size: 16px; }
   .video-detail__container .video__comments {
-    margin-top: 25px; }
-    .video-detail__container .video__comments .video__comment-number {
-      font-size: 18px; }
+    margin-top: 25px;
+    text-align: center; }
+    .video-detail__container .video__comments .add__comment {
+      margin-top: 25px; }
+      .video-detail__container .video__comments .add__comment input[type="text"] {
+        text-align: center; }
+    .video-detail__container .video__comments .video__comments-list {
+      margin-top: 25px; }
+      .video-detail__container .video__comments .video__comments-list .comments {
+        background-color: #40739e;
+        color: white;
+        font-size: 16px;
+        padding: 10px;
+        -webkit-border-radius: 10px;
+           -moz-border-radius: 10px;
+                border-radius: 10px;
+        -webkit-border-bottom-left-radius: 0px;
+           -moz-border-radius-bottomleft: 0px;
+                border-bottom-left-radius: 0px; }
+        .video-detail__container .video__comments .video__comments-list .comments:not(:last-child) {
+          margin-bottom: 25px; }
+    .video-detail__container .video__comments .video__comments-number {
+      font-size: 20px; }
 
 .user-profile {
   width: 100%;

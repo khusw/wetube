@@ -1,5 +1,6 @@
 import routes from "../routes";
 import Video from "../models/Video";
+import Comment from "../models/Comment";
 
 export const home = async (req, res) => {
   try {
@@ -59,7 +60,9 @@ export const video_detail = async (req, res) => {
     params: { id }
   } = req;
   try {
-    const video = await Video.findById(id).populate("creator");
+    const video = await Video.findById(id)
+      .populate("creator")
+      .populate("comments");
     res.render("video_detail", { pageTitles: `${video.title}`, video }); // model 을 pug 로 넘김 (videoBlock 의 video 변수로)
   } catch (error) {
     console.log(error);
@@ -113,4 +116,40 @@ export const delete_video = async (req, res) => {
     console.log(error);
   }
   res.redirect(routes.home);
+};
+
+export const postRegisterView = async (req, res) => {
+  const {
+    params: { id }
+  } = req;
+  try {
+    const video = await Video.findById(id);
+    video.views += 1;
+    video.save();
+    res.status(200);
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const addComment = async (req, res) => {
+  const {
+    params: { id },
+    body: { comment }
+  } = req;
+  try {
+    const video = await Video.findById(id);
+    const newCommnet = await Comment.create({
+      text: comment,
+      creator: user.id
+    });
+    video.comments.push(newCommnet.id);
+    video.save();
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
 };

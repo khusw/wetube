@@ -143,7 +143,7 @@ export const addComment = async (req, res) => {
     const video = await Video.findById(id);
     const newCommnet = await Comment.create({
       text: comment,
-      creator: user.id
+      creator: id
     });
     video.comments.push(newCommnet.id);
     video.save();

@@ -36,12 +36,11 @@ export const getUpload = (req, res) => {
 export const postUpload = async (req, res) => {
   const {
     body: { title, description },
-    file: { path }
+    file: { location }
   } = req;
-
   try {
     const newVideo = await Video.create({
-      fileUrl: path,
+      fileUrl: location,
       title,
       description,
       creator: req.user.id
@@ -63,6 +62,7 @@ export const video_detail = async (req, res) => {
     const video = await Video.findById(id)
       .populate("creator")
       .populate("comments");
+
     res.render("video_detail", { pageTitles: `${video.title}`, video }); // model 을 pug 로 넘김 (videoBlock 의 video 변수로)
   } catch (error) {
     console.log(error);
@@ -153,3 +153,16 @@ export const addComment = async (req, res) => {
     res.end();
   }
 };
+
+export const editComment = async (req, res) => {
+  console.log(req);
+  try {
+    const comment = await Comment.findById(req.user.id).populate("text");
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const deleteComment = async (req, res) => {};

@@ -31,9 +31,20 @@ block content
             form.add__comment#jsAddComment
                 if loggedUser
                     input(type="text", placeholder="Add a comment", name="comment")
-                    ul.video__comments-list#jsCommentList
-                        each comment in video.comments.reverse()
-                            li.comments 
-                                span=comment.text
                 else
                     input(type="text", placeholder="you need to log in" ,disabled)
+        .comment-list
+            ul.video__comments-list#jsCommentList
+                        each comment in video.comments.reverse()
+                            li.comments
+                                .comments__column
+                                    img(src="", alt="test")
+                                    span ..
+                                .comments__column
+                                    .comments__text-box 
+                                        span=comment.text
+                                    .comments__icon
+                                        a(href=routes.editComment)
+                                            i.fas.fa-edit
+                                        a(href=routes.deleteComment)
+                                            i.fas.fa-trash-alt

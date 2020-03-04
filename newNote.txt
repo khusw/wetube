@@ -911,3 +911,96 @@ const video = Video.findById(id).popluate('creator')
 같은 함수를 쓰게 되면, 해당하는 id 에 부합하는 대상을 찾은 다음
 User 모델에 있는 creator 필드명에 부합하는 document 을 찾아서 video 객체로 넘기게 된다
 즉, video document 에 creator 필드에 값을 객체로써 추가하는 것.
+
+75. mediaRecorder
+mediaRecorder 란 media 를 record 할 수 있게 도와주는 MediaStream Recording API 의 일종
+이 인터페이스를 통해서 미디어 데이터가 들어오면 record 가 되도록 도와줌
+어떤 미디어 데이터가 객체로써 저장되려면, MediaStream 이란 것이 주어져야 가능해짐 (web api)
+
+76.
+let streamObj;
+
+const startRecording = () => {
+  const videoRecorder = new MediaRecorder(streamObj);
+  videoRecorder.start();
+};
+
+같이 쓰게 되면 녹화를 위한 객체 생성하고, 녹화 시작을 하여 상태정보를 state:Recoding 으로 만든것.
+그러나 이것을 어떤 DB 에 저장하거나 하는 행위를 하지는 않은 상태
+이를 위해서는 addEventListener("dataavailable", func) 같은 형태로 이벤트 리스너 값을 추가해야함.
+
+77. MediaStream 을 활용한 mediaRecorder
+기본적으로 MediaStream 에서는 레코드 작업이 모두 끝나야
+하나의 데이터로 추출을 해주며, 
+레코딩이 끝나지 않았을때는, 아무런 작업을 할 수 없다
+그래서 이 수업에서는 일부러 setTimeOut 을 주어서 종료를 시키고 데이터를 얻어왔다.
+(만약 일부분씩 실시간으로 보내고자 한다면 start(time) 같은 방식으로 비디오 레코딩을
+실행시켜서 blob 각각을 짤라서 보낼 수도 있다,)
+
+비디오 녹화후에 얻는 데이터들은 JS 에선 blob 이라고 부른다
+
+78. ajax
+asynchronous javascript and XML
+비동기 자바스크립트, XML
+웹 페이지 내에서 일부 데이터가 변경되었을때, 웹 페이지 전체를 다시 쓰는 것이 아니라
+변경 되는 그 부분만 다시 쓰고 싶은 경우 쓰는것이 바로 ajax 이다.
+
+이 프로젝트에선 
+비디오를 쭉 전체 다 시청한 후 시청을 완료 했을때, 
+서버로 가서 시청을 완료했음을 알리고 view 숫자를 늘리는 방식을 구현하기 위해
+ajax 를 사용할 예정
+
+이때 controller 와 router 를 활용을 할것인데
+이전처럼 res.render 와 같이 랜더링을 하는게 아니라 
+내부적인 데이터만 바꾸도록 설정할 예정
+
+먼저, routes 를 만들어주고 (사용자가 접근 가능하면서, 랜더링은 불가능한)
+비디오 재생이 끝나면 해당 routes 주소로 간다
+
+
+79. axios
+axios 는 http method 를 기본적인 방법말고 더 간편하게 작성하도록 도와주는 라이브러리 
+프론트 엔드 단에서 get, post 등의 메소드를 쓰지 않고 그냥
+fetch(url) 같은 방식으로 간략하게 처리를 해줄 수 있다.
+
+80. pug 에서 특정 숫자만 받아오려는 경우
+span 1 comment 에서 
+1 의 숫자만 따로 변경하고 싶은경우
+span.className 1
+  |comment
+  같이 들여쓰기로 나눠서 쓰면 1 (숫자) 에 대한 부분만 변하도록 js 를 통해서 변경이 가능함.
+
+81. wetube 강의 에서는 실시간 (리뷰 업로드 등) 업로드를 가르치진 않는다
+그 이유는 socket.io 를 배우지 않아서 그런것 같다
+실시간 채팅창 등 의 기능을 만들려면 socket.io 를 배워야만 가능하다.
+
+82. 클라우드 서버에 데이터를 올릴때는
+file.path (node js 에서 기본적으로 제공하는 파일 시스템) 가 아니라 
+file.location (aws s3 에서 제공하는 bucket 경로) 으로 바뀜.
+
+83. get-blob-duration
+비디오 파일의 전체 (플레이) 길이 를 반환해주는 라이브러리
+이전까지는 formatDate() 라는 함수를 직접 만들어서 값을 구해 왔다면,
+이 라이브러리를 사용하면 빠르게 얻어 올 수 있다.
+
+blob 은 js 에서 파일을 의미한다.
+aws s3 같이 클라우드 서버에 저장된 파일을 임시로 받아올 때는 
+fetch 를 사용해서 받아온다.
+
+이때 주의할 점은 아마존 서버와 로컬 서버는 서로 다른 서버이기 때문에
+CORS 문제가 발생한다
+이를 해결하기 위해서 AWS S3 에 가서 CORS 설정을 바꿔준다.
+
+84. DB 를 로컬이 아닌 클라우드로 넘기기
+클라우드 서버인 AWS S3 에 넣는 방법도 있지만 
+mongoDB 자체를 mongoLab 이라는 곳에 넣어서 관리가 가능
+(참고 mongoLab 은 최근 mongo Atlas 가 인수하여 이름이 바뀌었다)
+
+85. IP whitelist
+IP whitelist 란 현재 생성한 mongo Atlas cluster 에 접근가능한 
+IP 주소목록을 설정하는 공간이다.
+여기에 IP 를 추가하면 해당 IP 주소는 현재 설정된 cluster 에 접근 할 수 있다.
+
+--
+어떤 대상을 popluate 한것에 또 popluate 를 할려면
+.popluate(path:"대상" popluate:"대상안의 대상")

@@ -1,0 +1,13 @@
+.search__header {
+  margin-bottom: 10px;
+  h3 {
+    color: #7c795d;
+    font-family: "Trocchi", serif;
+    font-size: 25px;
+  }
+}
+.search__videos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}

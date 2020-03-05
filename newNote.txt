@@ -1004,3 +1004,16 @@ IP 주소목록을 설정하는 공간이다.
 --
 어떤 대상을 popluate 한것에 또 popluate 를 할려면
 .popluate(path:"대상" popluate:"대상안의 대상")
+
+86. heroku 와 호환성 문제
+heroku 에 서버를 배포할때, heroku 는 기본적으로 리눅스 계통의 명령어만 먹히므로
+package.json 에서 윈도우 계통의 명령어는 제거한 채로 heroku 서버에 업로드 해야만 서버 구동 가능
+(shx 는 로컬 윈도우에서 리눅스 명령어 실행을 위한 모듈)
+
+
+87. passport 와 objectId 간 호환성
+구글, 페이스북 등 여러 social login 의 기능을 구현하려할때,
+해당 소셜넷의 유저 아이디 값이 mongoose objectId 규약에 정의된 범위를 벗어난 값이거나 타입이 맞지 않는경우
+id 를 넣기 보다는 findOne(email) 로 처리를 해서 문제 해결 가능 (이메일로 하게 되면 유일한 값도 가질수 있고, string 길이 고려 안해도됨)
+
+88. 

@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   avatarUrl: { type: String, default: process.env.DEFAULT_AVATAR_URL },
   facebookId: Number,
   githubId: Number,
+  googleId: Number,
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,

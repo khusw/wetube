@@ -70,29 +70,27 @@ export const postGithubLogin = (req, res) => {
   res.redirect(routes.home);
 };
 
-// facebook
-export const facebookLogin = passport.authenticate("facebook");
+// google
+export const googleLogin = passport.authenticate("google", {
+  scope: ["profile", "email"]
+});
 
-export const facebookLoginCallback = async (_, __, profile, cb) => {
+export const googleLoginCallback = async (_, __, profile, cb) => {
+  console.log(profile);
   const {
-    _json: {
-      id,
-      name,
-      picture: { url },
-      email
-    }
+    _json: { sub, name, picture, email }
   } = profile;
   try {
-    const user = await userModel.findOne({ email: email });
+    const user = await userModel.findOne({ email });
     if (user) {
-      (user.facebookId = id), user.save();
+      (user.id = sub), user.save();
       return cb(null, user);
     }
     const newUser = await userModel.create({
-      email,
       name,
-      facebookId: id,
-      avatarUrl: url
+      googleId: sub,
+      avatarUrl: picture,
+      email
     });
     return cb(null, newUser);
   } catch (error) {
@@ -100,7 +98,7 @@ export const facebookLoginCallback = async (_, __, profile, cb) => {
   }
 };
 
-export const postFacebookLogin = (req, res) => {
+export const postGoogleLogin = (req, res) => {
   res.redirect(routes.home);
 };
 // logout

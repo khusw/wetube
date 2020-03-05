@@ -1,10 +1,10 @@
 import passport from "passport";
 import GithubStrategy from "passport-github";
-import FacebookStrategy from "passport-facebook";
+import GoogleStrategy from "passport-google-oauth20";
 import User from "./models/User";
 import {
   githubLoginCallback,
-  facebookLoginCallback
+  googleLoginCallback
 } from "./controllers/userControllers";
 import routes from "./routes";
 
@@ -22,15 +22,13 @@ passport.use(
 );
 
 passport.use(
-  new FacebookStrategy(
+  new GoogleStrategy(
     {
-      clientID: process.env.FB_ID,
-      clientSecret: process.env.FB_SECRET,
-      callbackURL: `https://tasty-bat-10.localtunnel.me${routes.facebookCallback}`,
-      profileFields: ["id", "displayName", "photos", "email"],
-      scope: ["public_profile", "email"]
+      clientID: process.env.GG_ID,
+      clientSecret: process.env.GG_SECRET,
+      callbackURL: `http://localhost:4000${routes.googleCallback}`
     },
-    facebookLoginCallback
+    googleLoginCallback
   )
 );
 

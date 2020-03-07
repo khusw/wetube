@@ -13,6 +13,7 @@ export const postJoin = async (req, res, next) => {
   } = req;
 
   if (password !== password2) {
+    req.flash("error", "password can't match");
     res.status(400);
     res.render("join", { pageTitles: "Join" });
   } else {

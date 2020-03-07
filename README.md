@@ -2,15 +2,17 @@
 
 Cloning Youtube with VanillaJS and Node.js
 
-## pages:
+## Tech Stack
 
-- [x] Home
-- [x] Join
-- [x] Login
-- [x] Search
-- [ ] User Detail
-- [ ] Edit Profile
-- [ ] Change Password
-- [x] Upload
-- [ ] Edit Video
-- [ ] Video Detail
+- Front-end : VanillaJS, SaSS, pug, ES6, webpack
+- Back-end : MongoDB, Express, AWS S3, Heroku
+
+### ScreenShots
+
+- main
+
+- video info
+
+- login
+
+- search

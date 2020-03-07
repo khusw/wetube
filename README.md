@@ -25,3 +25,6 @@ Cloning Youtube with VanillaJS and Node.js
 
 ![sign up](https://user-images.githubusercontent.com/47293759/76145589-f862ad00-60cd-11ea-8bc0-33ae3236b197.PNG)
 
+- upload
+
+![upload](https://user-images.githubusercontent.com/47293759/76145621-5c857100-60ce-11ea-9f1a-0591c805452d.PNG)

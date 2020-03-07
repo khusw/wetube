@@ -11,6 +11,8 @@ Cloning Youtube with VanillaJS and Node.js
 
 - main
 
+<img src="https://tube-project.s3.ap-northeast-2.amazonaws.com/images/main.PNG" width="80%"></img>
+
 - video info
 
 - login

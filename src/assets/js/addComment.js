@@ -1,5 +1,4 @@
 import axios from "axios";
-import { response } from "express";
 
 const addCommentForm = document.getElementById("jsAddComment");
 const commentList = document.getElementById("jsCommentList");
@@ -51,21 +50,15 @@ const createComment = comment => {
 
 const sendComment = async comment => {
   const videoId = window.location.href.split("/videos/")[1];
-  try {
-    const response = await axios({
-      url: `/api/${videoId}/comment`,
-      method: "POST",
-      data: {
-        comment: comment
-      }
-    });
-    if (response.status === 200) {
-      createComment(comment);
+  const response = await axios({
+    url: `/api/${videoId}/comment`,
+    method: "POST",
+    data: {
+      comment
     }
-  } catch (error) {
-    response.status(400);
-  } finally {
-    response.end();
+  });
+  if (response.status === 200) {
+    createComment(comment);
   }
 };
 

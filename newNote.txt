@@ -1016,4 +1016,24 @@ package.json 에서 윈도우 계통의 명령어는 제거한 채로 heroku 서
 해당 소셜넷의 유저 아이디 값이 mongoose objectId 규약에 정의된 범위를 벗어난 값이거나 타입이 맞지 않는경우
 id 를 넣기 보다는 findOne(email) 로 처리를 해서 문제 해결 가능 (이메일로 하게 되면 유일한 값도 가질수 있고, string 길이 고려 안해도됨)
 
-88. 
+88. 함수 호출과 함수 참조
+js 에서는 함수를 사용할때,
+() 를 안붙이면 함수를 참조한다고 하고, 함수 내부를 실행하지는 않고 그냥 참조만 하는 것이고
+() 를 붙이게 되면 함수를 호출 한다고 하며, 함수 내부 코드를 실행한다.
+
+89. express flash
+express flash 는 alert 와 같은 경고 메시지나, 비밀번호가 일치하지 않습니다나, 비디오 업로드 완료 등
+유저에게 서버의 상태 정보를 보여 줄 수 있게 도와주는 모듈이다.
+
+사용 법은 일단 app.js 에 middleware 처럼 
+import flash from express-flash 를 하고,
+controller 부분에서 매칭되는 부분에 
+req.flash("type", "message") 같은 형식으로 작성한다
+type 은 아무거나 들어가도 상관 없다 (error, info, success 등 아무거나 써도 무관)
+
+그 다음 view template 부분에 들어가서 
+if message.info 
+  span=messages.info
+
+같은 방식으로 작성해주면 그 상황에 맞는 메시지가 출력된다
+이에 대한 스타일 부분은 따로 scss 작성해야만 한다.

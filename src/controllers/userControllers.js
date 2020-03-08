@@ -112,8 +112,12 @@ export const users = (req, res) => {
   res.render("users", { pageTitles: "Users" });
 };
 
-export const getMe = (req, res) => {
-  res.render("user_detail", { pageTitles: "user_detail", user: req.user });
+export const getMe = async (req, res) => {
+  const {
+    user: { id }
+  } = req;
+  const user = await userModel.findById(id).populate("videos");
+  res.render("user_detail", { pageTitles: "user_detail", user });
 };
 
 export const user_detail = async (req, res) => {

@@ -7,10 +7,10 @@ let videoRecorder;
 
 const handleVideoData = event => {
   const { data: videoFile } = event;
-  const link = document.createElement("a"); // a tag
-  link.href = URL.createObjectURL(videoFile); // a href
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(videoFile);
   link.download = "recorded.webm"; // file name
-  document.body.appendChild(link); // add a tag on body
+  document.body.appendChild(link);
   link.click(); // fake click
 };
 
@@ -25,7 +25,7 @@ const stopRecording = () => {
 const startRecording = () => {
   videoRecorder = new MediaRecorder(streamObj);
   videoRecorder.start();
-  videoRecorder.addEventListener("ondataavailable", handleVideoData);
+  videoRecorder.addEventListener("dataavailable", handleVideoData);
   recordBtn.addEventListener("click", stopRecording);
 };
 

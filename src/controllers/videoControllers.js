@@ -67,7 +67,6 @@ export const video_detail = async (req, res) => {
       });
     res.render("video_detail", { pageTitles: `${video.title}`, video }); // model 을 pug 로 넘김 (videoBlock 의 video 변수로)
   } catch (error) {
-    console.log(error);
     res.redirect(routes.home);
   }
 };

@@ -1,6 +1,6 @@
+import passport from "passport";
 import routes from "../routes";
 import userModel from "../models/User";
-import passport from "passport";
 
 // join
 export const getJoin = (req, res) => {
@@ -120,7 +120,7 @@ export const getMe = async (req, res) => {
   res.render("user_detail", { pageTitles: "user_detail", user });
 };
 
-export const user_detail = async (req, res) => {
+export const userDetail = async (req, res) => {
   const {
     params: { id }
   } = req;

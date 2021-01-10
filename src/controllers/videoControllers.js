@@ -54,7 +54,7 @@ export const postUpload = async (req, res) => {
   }
 };
 
-export const video_detail = async (req, res) => {
+export const videoDetail = async (req, res) => {
   const {
     params: { id }
   } = req;
@@ -102,7 +102,7 @@ export const postEditVideo = async (req, res) => {
   }
 };
 
-export const delete_video = async (req, res) => {
+export const deleteVideo = async (req, res) => {
   const {
     params: { id }
   } = req;

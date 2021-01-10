@@ -2,7 +2,7 @@ import express from "express";
 import routes from "../routes";
 import {
   users,
-  user_detail,
+  userDetail,
   getEditProfile,
   postEditProfile,
   getChangePassword,
@@ -28,6 +28,6 @@ userRouter.post(
 userRouter.get(routes.change_password, onlyPrivate, getChangePassword);
 userRouter.post(routes.change_password, onlyPrivate, postChangePassword);
 
-userRouter.get(routes.user_detail(), user_detail);
+userRouter.get(routes.user_detail(), userDetail);
 
 export default userRouter;
